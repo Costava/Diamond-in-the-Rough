@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Diamond in the Rough</title>
+
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Trade+Winds|Exo' rel='stylesheet' type='text/css'>
+
+    <script src="lib/jquery-1.11.1.js"></script>
+    <script src="lib/crafty.js"></script>
+    <script src="lib/general.utilities.js"></script>
+</head>
+
+<body>
+    <div class="game-wrapper">
+        <span class="score"></span>
+        <span class="game-over-text">Thanks for playing!</span>
+        <div class="game-ui">
+            <h1 class="game-name">Diamond in the Rough</h1>
+
+            <button class="menu-option play-button">Play</button>
+
+            <a href="https://github.com/costava" target="_blank"><button class="menu-option">More Info on Github</button></a>
+        </div>
+
+        <div class="game-stage"></div>
+    </div>
+
+    <script src="scripts/script.js"></script>
+
+    <script src="scripts/game.js"></script>
+    <script src="lib/boxoverlays.js"></script>
+    <script src="scripts/components.js"></script>
+    <script src="scripts/scenes.js"></script>
+
+    <script>
+        //window.addEventListener('load', Game.start);
+        $(document).ready(function() {
+            console.log('Game Started');
+            Game.start();
+        });
+    </script>
+</body>
+
+</html>
