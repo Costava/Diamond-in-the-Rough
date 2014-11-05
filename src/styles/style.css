@@ -62,6 +62,8 @@ html, body, .game-wrapper, .game-ui .game-stage {
 
     top: 20px;
     left: 20px;
+
+    visibility: hidden;
 }
 
 .game-over-text {
@@ -71,8 +73,30 @@ html, body, .game-wrapper, .game-ui .game-stage {
     font-size: 70px;
 
     position: absolute;
-    left: 0px;
+    top: 20px;
     right: 0px;
+    left: 0px;
+
+    text-align: center;
+
+    z-index: 200;
+
+    visibility: hidden;
+}
+
+.play-again {
+    color: #FFF;
+
+    background-color: #555;
+    border-radius: 20px;
+
+    font-family: "Exo", sans-serif;
+    font-size: 70px;
+
+    position: absolute;
+    bottom: 20px;
+    right: 0px;
+    left: 0px;
 
     text-align: center;
 

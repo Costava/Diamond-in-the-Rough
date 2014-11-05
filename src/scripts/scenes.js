@@ -179,7 +179,7 @@ Crafty.scene('MainMenu', function() {
         Crafty.audio.play('FX181');
 
         shipDiamond.addComponent('MoveTo')
-            .moveto(-(shipDiamond.w / 2), 1500, 390, function() {
+            .moveto(-(shipDiamond.w / 2), 1500, 4, function() {
                 console.log("shipDiamond moved to success");
 
                 //shipDiamond.removeComponent('MoveTo', false);
@@ -254,10 +254,12 @@ Crafty.scene('Playing', function() {
     var score = 0;
 
     shipDiamond.addComponent('MoveTo')
-        .moveto(planetRadius - (shipDiamond.w / 2), shipDiamond.h * 0.6, 200, function() {
+        .moveto(planetRadius - (shipDiamond.w / 2), shipDiamond.h * 0.6, 3, function() {
             console.log("different arrived");
 
             Crafty.audio.play('Thud');
+
+            $('.score')[0].style.visibility = 'visible';
 
             setTimeout(function() {
                 Crafty.audio.play('Orbital_Colossus', -1);
@@ -280,18 +282,30 @@ Crafty.scene('Playing', function() {
             var newAsteroids = setInterval(function() {
                 //console.log("new a");
 
+                var highVal = 500;
+                var lowVal = 300;
+
+                var astX = (Math.random() < 0.5)? getRandInt(-highVal, -lowVal) : getRandInt(lowVal, highVal);
+                var astY = (Math.random() < 0.5)? getRandInt(-highVal, -lowVal) : getRandInt(lowVal, highVal);
+
+                //console.log(astX, astY);
+
                 var asteroid = Crafty.e('Asteroid')
                     .attr({
-                        x: getRandInt(-500, -300),
-                        y: getRandInt(-500, -300),
+                        x: astX,
+                        y: astY,
                         w: 25,
                         h: 25
                     })
                     .color("#555");
 
                 asteroid.addComponent("MoveTo")
-                    .moveto(planetRadius, planetRadius, 140, function() {
+                    .moveto(planetRadius, planetRadius, 4.4, function() {
                         console.log("die");
+
+                        //console.log("removeEvent this:", this);
+                        //Crafty.removeEvent(this, Crafty.stage.elem, 'mousedown', shoot);
+                        window.removeEventListener('mousedown', shoot);
 
                         defensePlanet._isTrackingMouse = false;
 
@@ -306,15 +320,33 @@ Crafty.scene('Playing', function() {
                         }
 
                         $('.game-over-text')[0].style.visibility = 'visible';
+                        $('.play-again')[0].style.visibility = 'visible';
                     });
 
                 asteroid._hasDebugMarkers = true;
 
                 allAsteroids.push(asteroid);
 
-            }, 600);
+            }, 700);
 
-            Crafty.addEvent(this, Crafty.stage.elem, 'mousedown', function(e) {
+            $('.play-again')[0].addEventListener('click', restart);
+
+            function restart() {
+                $('.score')[0].style.visibility = 'hidden';
+                $('.score')[0].innerHTML = "0";
+                $('.game-over-text')[0].style.visibility = 'hidden';
+                $('.play-again')[0].style.visibility = 'hidden';
+
+                $('.play-again')[0].removeEventListener('click', restart);
+
+                Crafty.scene('Playing');
+            }
+
+            //console.log("addEvent this:", this);
+            //Crafty.addEvent(this, Crafty.stage.elem, 'mousedown', shoot);
+            window.addEventListener('mousedown', shoot);
+
+            function shoot(e) {
                 // Crafty.e('DebugMarker')
                 //     .attr({
                 //         x: shipDiamond.getActualPosition({ x: shipDiamond.w / 2, y: 0 }).x,
@@ -333,7 +365,8 @@ Crafty.scene('Playing', function() {
 
                 //var shipCenter = shipDiamond.getActualPosition({ x: shipDiamond.w / 2, y: shipDiamond.h / 2 });
                 var shipTip = shipDiamond.getActualPosition({ x: shipDiamond.w / 2, y: 0 });
-                var mousePosition = screenSpaceToGameSpace(e);
+                var rawMousePos =  new utility.Vector2(e.x || e.clientX, e.y || e.clientY);
+                var mousePosition = screenSpaceToGameSpace(rawMousePos);
 
                 for (var i = 0; i < allAsteroids.length; i++) {
                     /*console.log("ax:", allAsteroids[i].x);
@@ -391,7 +424,7 @@ Crafty.scene('Playing', function() {
                 //         bullet.destroy();
                 //     });
 
-            });
+            }
 
             //shipDiamond.removeComponent('MoveTo', false);
         });

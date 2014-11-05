@@ -218,11 +218,20 @@ Crafty.c('MoveTo', {
 		});*/
     },
 
-    moveto: function(x, y, pixPerSec, successCallback) {
+    moveto: function(x, y, timeInSeconds, successCallback) {
         // Destination
         this.destX = x;
         this.destY = y;
-        this.pixPerSec = pixPerSec;
+        this.timeInSeconds = timeInSeconds;
+
+        this.xDirection = (this.destX > this.x)? 1: -1;
+        this.yDirection = (this.destY > this.y)? 1: -1;
+
+        this.totalXDistance = Math.abs(this.destX - this.x) * this.xDirection;
+        this.totalYDistance = Math.abs(this.destY - this.y) * this.yDirection;
+
+        this.xPerSec = this.totalXDistance / this.timeInSeconds;
+        this.yPerSec = this.totalYDistance / this.timeInSeconds;
 
         if (successCallback != undefined && successCallback != null) {
             this._successCallback = successCallback;
@@ -238,26 +247,35 @@ Crafty.c('MoveTo', {
     _update: function(e) {
         if (!this._hasCallbackAlreadyRun) {
             // Total remaining distance to destination
-            var xDistance = this.destX - this.x;
-            var yDistance = this.destY - this.y;
+            // var xDistance = Math.abs(this.destX - this.x);
+            // var yDistance = Math.abs(this.destY - this.y);
 
-            // Max distance x or y can change in pixels this update loop
-            var pixChange = e.dt * 0.001 * this.pixPerSec;
+            var xDirection = (this.destX > this.x)? 1: -1;
+            var yDirection = (this.destY > this.y)? 1: -1;
+
+            var remainingXDistance = Math.abs(this.destX - this.x) * xDirection;
+            var remainingYDistance = Math.abs(this.destY - this.y) * yDirection;
+
+            // // Max distance x or y can change in pixels this update loop
+            // var pixChange = e.dt * 0.001 * this.pixPerSec;
             var xChange, yChange;
 
+            var maxXChange = this.xPerSec * e.dt * 0.001;
+            var maxYChange = this.yPerSec * e.dt * 0.001;
+
             // Don't let x and y go past their destination
-            if (pixChange > xDistance) {
-                xChange = xDistance;
+            if (Math.abs(maxXChange) > Math.abs(remainingXDistance)) {
+                xChange = remainingXDistance;
             }
             else {
-                xChange = pixChange;
+                xChange = maxXChange;
             }
 
-            if (pixChange > yDistance) {
-                yChange = yDistance;
+            if (Math.abs(maxYChange) > Math.abs(remainingYDistance)) {
+                yChange = remainingYDistance;
             }
             else {
-                yChange = pixChange;
+                yChange = maxYChange;
             }
 
             this.shift(xChange, yChange, 0, 0);
@@ -364,7 +382,8 @@ Crafty.c('DefensePlanet', {
 
         Crafty.addEvent(this, Crafty.stage.elem, 'mousemove', function(e) {
             if (this._isTrackingMouse) {
-                var mousePosition = this._screenSpaceToGameSpace(e);
+                var rawMousePos =  new utility.Vector2(e.x || e.clientX, e.y || e.clientY);
+                var mousePosition = this._screenSpaceToGameSpace(rawMousePos);
 
                 var characterPositionOffset = new utility.Vector2(this.w/2, this.h-(this.h/2));
 
