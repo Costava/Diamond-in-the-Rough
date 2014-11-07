@@ -17,6 +17,20 @@ html, body, .game-wrapper, .game-ui .game-stage {
     background-color: #000000;
 }
 
+.loading-ui {
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    left: 0px;
+
+    text-align: center;
+
+    font-family: sans-serif;
+    color: #FFFFFF;
+
+    visibility: hidden;
+}
+
 .game-ui {
     position: absolute;
     top: 0;

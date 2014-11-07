@@ -1,71 +1,110 @@
 Crafty.scene('Loading', function() {
-    console.log("Loading Scene");
+    console.log("Loading scene");
+
+    document.getElementsByClassName('loading-ui')[0].style.visibility = 'visible';
 
     Crafty.load([
-        'audio/Dream_2_Ambience.mp3',
-        'audio/Dream_2_Ambience.ogg',
-        'audio/Dream_2_Ambience.wav',
+        'audio/8bit_bomb_explosion.aac',
+        'audio/8bit_bomb_explosion.mp3',
+        'audio/8bit_bomb_explosion.ogg',
 
+        'audio/Afterburner.aac',
+        'audio/Afterburner.mp3',
         'audio/Afterburner.ogg',
 
-        'audio/FX202.wav',
-        'audio/FX181.wav',
-        'audio/FX194.wav',
+        'audio/Dream_2_Ambience.aac',
+        'audio/Dream_2_Ambience.mp3',
+        'audio/Dream_2_Ambience.ogg',
 
+        'audio/FX181.aac',
+        'audio/FX181.mp3',
+        'audio/FX181.ogg',
+
+        'audio/FX194.aac',
+        'audio/FX194.mp3',
+        'audio/FX194.ogg',
+
+        'audio/FX202.aac',
+        'audio/FX202.mp3',
+        'audio/FX202.ogg',
+
+        'audio/Orbital_Colossus.aac',
         'audio/Orbital_Colossus.mp3',
-        'audio/8bit_bomb_explosion.wav',
+        'audio/Orbital_Colossus.ogg',
 
-        'audio/ventilator.ogg',
-        'audio/ventilator.wav'
+        'audio/ventilator.aac',
+        'audio/ventilator.mp3',
+        'audio/ventilator.ogg'
     ], function() {
         console.log("Loaded");
-        Crafty.audio.add('Dream_2_A', [
-                'audio/Dream_2_Ambience.mp3',
-                'audio/Dream_2_Ambience.ogg',
-                'audio/Dream_2_Ambience.wav'
+
+        Crafty.audio.add('bomb_explosion', [
+                'audio/8bit_bomb_explosion.aac',
+                'audio/8bit_bomb_explosion.mp3',
+                'audio/8bit_bomb_explosion.ogg'
             ]
         );
 
         Crafty.audio.add('Afterburner', [
+                'audio/Afterburner.aac',
+                'audio/Afterburner.mp3',
                 'audio/Afterburner.ogg'
             ]
         );
 
-        Crafty.audio.add('FX202', [
-                'audio/FX202.wav'
+        Crafty.audio.add('Dream_2_A', [
+                'audio/Dream_2_Ambience.aac',
+                'audio/Dream_2_Ambience.mp3',
+                'audio/Dream_2_Ambience.ogg'
             ]
         );
+
         Crafty.audio.add('FX181', [
-                'audio/FX181.wav'
+                'audio/FX181.aac',
+                'audio/FX181.mp3',
+                'audio/FX181.ogg'
             ]
         );
+
         Crafty.audio.add('Thud', [
-                'audio/FX194.wav'
+                'audio/FX194.aac',
+                'audio/FX194.mp3',
+                'audio/FX194.ogg'
             ]
         );
+
+        Crafty.audio.add('FX202', [
+                'audio/FX202.aac',
+                'audio/FX202.mp3',
+                'audio/FX202.ogg'
+            ]
+        );
+
 
         Crafty.audio.add('Orbital_Colossus', [
-                'audio/Orbital_Colossus.mp3'
-            ]
-        );
-
-        Crafty.audio.add('bomb_explosion', [
-                'audio/8bit_bomb_explosion.wav'
+                'audio/Orbital_Colossus.aac',
+                'audio/Orbital_Colossus.mp3',
+                'audio/Orbital_Colossus.ogg'
             ]
         );
 
         Crafty.audio.add('Twang', [
-                'audio/ventilator.ogg',
-                'audio/ventilator.wav'
+                'audio/ventilator.aac',
+                'audio/ventilator.mp3',
+                'audio/ventilator.ogg'
             ]
         );
 
+        console.log("Audio added")
+
         Crafty.scene('Intro');
     });
+}, function() {// Do this when leaving Intro scene
+    document.getElementsByClassName('loading-ui')[0].style.visibility = 'hidden';
 });
 
 Crafty.scene('Intro', function() {
-    console.log("Intro Scene");
+    console.log("Intro scene");
 
     Crafty.audio.play('Dream_2_A', -1);
 
@@ -143,7 +182,7 @@ Crafty.scene('Intro', function() {
 });
 
 Crafty.scene('MainMenu', function() {
-    console.log("MainMenu Scene");
+    console.log("MainMenu scene");
     Crafty.audio.play('Afterburner', -1);
 
     var shipWidth = Game.height() * 1.75 * (3/7);
@@ -194,7 +233,7 @@ Crafty.scene('MainMenu', function() {
 });
 
 Crafty.scene('InBetween', function() {
-    console.log("InBetween Scene");
+    console.log("InBetween scene");
 
     Crafty.scene('Playing');
 });
