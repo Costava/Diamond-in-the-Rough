@@ -18,3 +18,5 @@ Thank you to everyone who shares their art on [Open Game Art](http://opengameart
 * [Matthew Pablo](http://www.matthewpablo.com): Music
 * [Luke.RUSTLTD](http://opengameart.org/users/lukerustltd): Sound Effects
 * [FacadeGaikan](http://opengameart.org/users/facadegaikan): Sound Effects
+
+More attribution details in [attribution.md](https://github.com/Costava/Diamond-in-the-Rough/blob/master/attribution.md)
