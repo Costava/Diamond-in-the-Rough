@@ -4,7 +4,7 @@
 	box-sizing: border-box;
 }
 
-html, body, .game-wrapper, .game-ui .game-stage {
+html, body, .game-wrapper, .game-stage {
     margin: 0px;
     border: 0px;
     padding: 0px;
@@ -23,15 +23,16 @@ html, body, .game-wrapper, .game-ui .game-stage {
     right: 0px;
     left: 0px;
 
+    z-index: 200;
+    visibility: hidden;
+
     text-align: center;
 
     font-family: sans-serif;
     color: #FFFFFF;
-
-    visibility: hidden;
 }
 
-.game-ui {
+.main-menu-ui {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -39,10 +40,8 @@ html, body, .game-wrapper, .game-ui .game-stage {
     left: 0;
 
     z-index: 200;
-
     visibility: hidden;
 
-    color: #FFFFFF;
     text-align: center;
 
     display: flex;
@@ -51,33 +50,43 @@ html, body, .game-wrapper, .game-ui .game-stage {
     align-items: center;
 }
 
-/*.menu-gradient {
-    background-image: linear-gradient(to right, black, rgb(145, 255, 58), black);
-}*/
-
-.game-name {
-    font-family: "Trade Winds", "Tahoma";
+.main-menu-title {
+    font-family: "Trade Winds", "serif";
+    color: #FFFFFF;
+    font-size: 64px;
 }
 
 .menu-option {
-    font-family: "Exo", sans-serif;
+    border: 0px;
+    border-radius: 6px;
 
-    display: inline-block;
+    font-family: "Exo", sans-serif;
+    color: #FFFFFF;
+    font-size: 32px;
+
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.menu-option:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.in-game-ui {
+    position: absolute;
+
+    z-index: 400;
+    visibility: hidden;
 }
 
 .score {
-    color: #FFF;
-
+    color: #FFFFFF;
     font-family: "Exo", sans-serif;
     font-size: 70px;
-    font-weight: bold;
 
     position: absolute;
 
     top: 20px;
     left: 20px;
-
-    visibility: hidden;
 }
 
 .game-over-text {

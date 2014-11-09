@@ -4,94 +4,94 @@ Crafty.scene('Loading', function() {
     document.getElementsByClassName('loading-ui')[0].style.visibility = 'visible';
 
     Crafty.load([
-        'audio/8bit_bomb_explosion.aac',
         'audio/8bit_bomb_explosion.mp3',
         'audio/8bit_bomb_explosion.ogg',
+        'audio/8bit_bomb_explosion.aac',
 
-        'audio/Afterburner.aac',
         'audio/Afterburner.mp3',
         'audio/Afterburner.ogg',
+        'audio/Afterburner.aac',
 
-        'audio/Dream_2_Ambience.aac',
         'audio/Dream_2_Ambience.mp3',
         'audio/Dream_2_Ambience.ogg',
+        'audio/Dream_2_Ambience.aac',
 
-        'audio/FX181.aac',
         'audio/FX181.mp3',
         'audio/FX181.ogg',
+        'audio/FX181.aac',
 
-        'audio/FX194.aac',
         'audio/FX194.mp3',
         'audio/FX194.ogg',
+        'audio/FX194.aac',
 
-        'audio/FX202.aac',
         'audio/FX202.mp3',
         'audio/FX202.ogg',
+        'audio/FX202.aac',
 
-        'audio/Orbital_Colossus.aac',
         'audio/Orbital_Colossus.mp3',
         'audio/Orbital_Colossus.ogg',
+        'audio/Orbital_Colossus.aac',
 
-        'audio/ventilator.aac',
         'audio/ventilator.mp3',
-        'audio/ventilator.ogg'
+        'audio/ventilator.ogg',
+        'audio/ventilator.aac'
     ], function() {
         console.log("Loaded");
 
         Crafty.audio.add('bomb_explosion', [
-                'audio/8bit_bomb_explosion.aac',
                 'audio/8bit_bomb_explosion.mp3',
-                'audio/8bit_bomb_explosion.ogg'
+                'audio/8bit_bomb_explosion.ogg',
+                'audio/8bit_bomb_explosion.aac'
             ]
         );
 
         Crafty.audio.add('Afterburner', [
-                'audio/Afterburner.aac',
                 'audio/Afterburner.mp3',
-                'audio/Afterburner.ogg'
+                'audio/Afterburner.ogg',
+                'audio/Afterburner.aac'
             ]
         );
 
         Crafty.audio.add('Dream_2_A', [
-                'audio/Dream_2_Ambience.aac',
                 'audio/Dream_2_Ambience.mp3',
-                'audio/Dream_2_Ambience.ogg'
+                'audio/Dream_2_Ambience.ogg',
+                'audio/Dream_2_Ambience.aac'
             ]
         );
 
-        Crafty.audio.add('FX181', [
-                'audio/FX181.aac',
+        Crafty.audio.add('Harsh', [
                 'audio/FX181.mp3',
-                'audio/FX181.ogg'
+                'audio/FX181.ogg',
+                'audio/FX181.aac'
             ]
         );
 
         Crafty.audio.add('Thud', [
-                'audio/FX194.aac',
                 'audio/FX194.mp3',
-                'audio/FX194.ogg'
+                'audio/FX194.ogg',
+                'audio/FX194.aac'
             ]
         );
 
-        Crafty.audio.add('FX202', [
-                'audio/FX202.aac',
+        Crafty.audio.add('Flourish', [
                 'audio/FX202.mp3',
-                'audio/FX202.ogg'
+                'audio/FX202.ogg',
+                'audio/FX202.aac'
             ]
         );
 
 
         Crafty.audio.add('Orbital_Colossus', [
-                'audio/Orbital_Colossus.aac',
                 'audio/Orbital_Colossus.mp3',
-                'audio/Orbital_Colossus.ogg'
+                'audio/Orbital_Colossus.ogg',
+                'audio/Orbital_Colossus.aac'
             ]
         );
 
         Crafty.audio.add('Twang', [
-                'audio/ventilator.aac',
                 'audio/ventilator.mp3',
-                'audio/ventilator.ogg'
+                'audio/ventilator.ogg',
+                'audio/ventilator.aac'
             ]
         );
 
@@ -149,7 +149,7 @@ Crafty.scene('Intro', function() {
             .expander(1.2);
 
         Crafty.audio.stop();
-        Crafty.audio.play('FX202');
+        Crafty.audio.play('Flourish');
 
         // Crafty.bind('DoneExpanding', function() {
         //     Crafty.scene('MainMenu');
@@ -199,7 +199,7 @@ Crafty.scene('MainMenu', function() {
     //$('.game-wrapper')[0].className += ' ' + 'menu-gradient';
     $('.game-wrapper')[0].style.backgroundImage = 'linear-gradient(to right, black, ' + getRandColor() + ', black)';
 
-    $('.game-ui')[0].style.visibility = 'visible';
+    $('.main-menu-ui')[0].style.visibility = 'visible';
 
     $('.play-button')[0].addEventListener('click', outro);
 
@@ -208,14 +208,14 @@ Crafty.scene('MainMenu', function() {
         $('.play-button')[0].removeEventListener('click', outro);
 
         // Hide ui
-        $('.game-ui')[0].style.visibility = 'hidden';
+        $('.main-menu-ui')[0].style.visibility = 'hidden';
 
         // Back to black background
         $('.game-wrapper')[0].style.backgroundImage = '';
         $('.game-wrapper')[0].style.backgroundColor = '#000000';
 
         Crafty.audio.stop();
-        Crafty.audio.play('FX181');
+        Crafty.audio.play('Harsh');
 
         shipDiamond.addComponent('MoveTo')
             .moveto(-(shipDiamond.w / 2), 1500, 4, function() {
@@ -298,7 +298,7 @@ Crafty.scene('Playing', function() {
 
             Crafty.audio.play('Thud');
 
-            $('.score')[0].style.visibility = 'visible';
+            $('.in-game-ui')[0].style.visibility = 'visible';
 
             setTimeout(function() {
                 Crafty.audio.play('Orbital_Colossus', -1);
@@ -371,7 +371,7 @@ Crafty.scene('Playing', function() {
             $('.play-again')[0].addEventListener('click', restart);
 
             function restart() {
-                $('.score')[0].style.visibility = 'hidden';
+                $('.in-game-ui')[0].style.visibility = 'hidden';
                 $('.score')[0].innerHTML = "0";
                 $('.game-over-text')[0].style.visibility = 'hidden';
                 $('.play-again')[0].style.visibility = 'hidden';
@@ -442,9 +442,9 @@ Crafty.scene('Playing', function() {
                 //     .attr({ x: shipTip.x, y: shipTip.y, w: 5, h: 5 })
                 //     .color('#777');
                 //
-                Crafty.e('DebugMarker')
-                    .attr({ x: mousePosition.x, y: mousePosition.y, w: 5, h: 5 })
-                    .color('rgba(150, 160, 10, 0.3)');
+                // Crafty.e('DebugMarker')
+                //     .attr({ x: mousePosition.x, y: mousePosition.y, w: 5, h: 5 })
+                //     .color('rgba(150, 160, 10, 0.3)');
 
                 // var shootDir = new utility.Vector2(mousePosition.x - shipTip.x, mousePosition.y - shipTip.y);
                 //
