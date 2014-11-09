@@ -7,6 +7,8 @@ Simple game made in HTML, CSS, and Javascript with Crafty.js
 
 Developed over 3 days for the [GDSE Anniversary Game Jam 2014](http://meta.gamedev.stackexchange.com/questions/1794/anniversary-game-jam-2014).
 
+#### [Play Online](https://costava.github.io/Diamond-in-the-Rough/)
+
 Special Thanks
 --------------
 
