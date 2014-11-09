@@ -9,6 +9,8 @@ Developed over 3 days for the [GDSE Anniversary Game Jam 2014](http://meta.gamed
 
 #### [Play Online](https://costava.github.io/Diamond-in-the-Rough/)
 
+![Diamond-in-the-Rough](http://i.stack.imgur.com/3z6Dp.png)
+
 Special Thanks
 --------------
 
