@@ -1,6 +1,10 @@
 Crafty.scene('Loading', function() {
     console.log("Loading scene");
 
+    document.getElementsByClassName('main-menu-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('in-game-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('game-over-ui')[0].style.visibility = 'hidden';
+
     document.getElementsByClassName('loading-ui')[0].style.visibility = 'visible';
 
     Crafty.load([
@@ -99,28 +103,21 @@ Crafty.scene('Loading', function() {
 
         Crafty.scene('Intro');
     });
-}, function() {// Do this when leaving Intro scene
-    document.getElementsByClassName('loading-ui')[0].style.visibility = 'hidden';
 });
 
 Crafty.scene('Intro', function() {
     console.log("Intro scene");
 
+    Crafty.audio.stop();
+
+    document.getElementsByClassName('loading-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('main-menu-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('in-game-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('game-over-ui')[0].style.visibility = 'hidden';
+
+    document.getElementsByClassName('intro-ui')[0].style.visibility = 'visible';
+
     Crafty.audio.play('Dream_2_A', -1);
-
-    var planets = [];
-
-    function addPlanet() {
-        var yIn = getRandInt(-Game.height() / 4, -1);
-
-        planets.push(getRandPlanet(undefined, yIn, undefined, Game.height() / 2, 0, 0));
-    }
-
-    for (var i = 0; i < 8; i++) {
-        planets.push(getRandPlanet(undefined, undefined, undefined, undefined, 0, 0));
-    }
-
-    Crafty.bind('PlanetDestroyed', addPlanet);
 
     var shipDiamond = Crafty.e('ShipDiamond')
         .attr({ x: 0, y: 0, w: 30, h: 70 });
@@ -128,16 +125,79 @@ Crafty.scene('Intro', function() {
     shipDiamond.addComponent('CanvasShadow')
         .canvasshadow('#000000', 50, 0, 0);
 
+    function centerOnShip() {
+        Crafty.viewport.centerOn(shipDiamond, 1);
+    }
+
     Crafty.viewport.clampToEntities = false;
-    Crafty.e('LerpCamera').lerpCamera(shipDiamond, 5);
+    centerOnShip();
 
-	//Crafty.viewport.follow(shipDiamond, 0, 0);
+    window.addEventListener('resize', centerOnShip);
 
-    function transitioning() {
+    var planets = [];
+
+    function addPlanet() {
+        // var yIn = getRandInt(-Game.height() / 4, -1);
+        //
+        // planets.push(getRandPlanet(undefined, yIn, undefined, Game.height() / 2, 0, 0));
+
+        var x = getRandInt(-(Game.width() / 2), Game.width() / 2);
+        var y = getRandInt(-1.1 * (Game.height() / 2), -1.4 * (Game.height() / 2));
+
+        var minDimension = Math.min(Game.width(), Game.height());
+
+        var radius = getRandInt(0.05 * minDimension, 0.26 * minDimension);
+
+        var gradX = (Math.random() < 0.5)? getRandInt(-(1.1 * radius), -radius) : getRandInt(radius, 1.1 * radius);
+        var gradY = getRandInt(-(Game.height() / 8), Game.height() / 8);
+
+        gradX += x;
+
+        var gradRadius2 = getRandInt(2 * radius, 6 * radius);
+
+        var colorStops = [];
+        for (var i = 0; i < 3; i++) {
+            colorStops.push(getRandColor());
+        }
+
+        var gradient = Gradient(
+            gradX,
+            gradY,
+            0,
+            gradX,
+            gradY,
+            gradRadius2,
+            colorStops
+        );
+
         /* */
-        console.log("click");
+        planets.push(
+            Crafty.e('Planet')
+                .attr({ x: x, y: y, w: (2 * radius), h: (2 * radius) })
+                .planet(radius, gradient)
+                .shifter(0, 30)
+        );
+        /* */
+    }
 
-        window.removeEventListener('click', transitioning);
+    // Inital population of planets
+    for (var i = 0; i < 8; i++) {
+        //planets.push(getRandPlanet(undefined, undefined, undefined, undefined, 0, 0));
+
+        addPlanet();
+
+        planets[i].y += getRandInt(Game.height() * 0.5, Game.height());
+    }
+
+    Crafty.bind('PlanetDestroyed', addPlanet);
+
+    function transition() {
+        /* */
+        console.log("transition");
+
+        window.removeEventListener('click', transition);
+
+        document.getElementsByClassName('intro-ui')[0].style.visibility = 'hidden';
 
         Crafty.unbind('PlanetDestroyed', addPlanet);
 
@@ -146,100 +206,88 @@ Crafty.scene('Intro', function() {
         }
 
         shipDiamond.addComponent('Expander')
-            .expander(1.2);
+            .expander(1.2, Game.height() * 1.75, nextScene);
 
         Crafty.audio.stop();
         Crafty.audio.play('Flourish');
-
-        // Crafty.bind('DoneExpanding', function() {
-        //     Crafty.scene('MainMenu');
-        // });
-
-        // setTimeout(function() {
-        //     //Crafty.audio.play('Afterburner', -1);
-        //     Crafty.scene('MainMenu');
-        // }, (Game.height() / 438) * 2000);
-        // // Timeout delay is adjusted by height of canvas because
-        // //  expanding takes longer with higher canvas
-
-
-        //Crafty.scene('MainMenu');
-
         /* */
     }
 
-    //Crafty.scene('Playing');
-
     function nextScene() {
-        window.removeEventListener('click', nextScene);
+        window.removeEventListener('resize', centerOnShip);
 
         Crafty.audio.stop();
 
         Crafty.scene("MainMenu");
     }
 
-    window.addEventListener('click', nextScene);
+    window.addEventListener('click', transition);
 });
 
 Crafty.scene('MainMenu', function() {
     console.log("MainMenu scene");
+
+    document.getElementsByClassName('loading-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('in-game-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('game-over-ui')[0].style.visibility = 'hidden';
+
+    // ok green 145, 255, 58
+    // good yellow rgb(245, 255, 72)
+    document.getElementsByClassName('game-wrapper')[0].style.backgroundImage = 'linear-gradient(to right, black, ' + getRandColor() + ', black)';
+
+    document.getElementsByClassName('main-menu-ui')[0].style.visibility = 'visible';
+
     Crafty.audio.play('Afterburner', -1);
 
     var shipWidth = Game.height() * 1.75 * (3/7);
     var shipHeight = Game.height() * 1.75;
 
     var shipDiamond = Crafty.e('ShipDiamond')
-        .attr({ x: -(shipWidth / 2), y: -(shipHeight / 2), w: Game.height() * 1.75 * (3/7), h: Game.height() * 1.75 });
+        .attr({ x: -(shipWidth / 2), y: -(shipHeight / 2), w: shipWidth, h: shipHeight });
 
     shipDiamond.addComponent('CanvasShadow')
         .canvasshadow('#000000', 50, 0, 0);
 
-    // ok green 145, 255, 58
-    // good yellow rgb(245, 255, 72)
-    //$('.game-wrapper')[0].className += ' ' + 'menu-gradient';
-    $('.game-wrapper')[0].style.backgroundImage = 'linear-gradient(to right, black, ' + getRandColor() + ', black)';
-
-    $('.main-menu-ui')[0].style.visibility = 'visible';
-
-    $('.play-button')[0].addEventListener('click', outro);
+    Crafty.viewport.centerOn(shipDiamond, 1);
 
     function outro(e) {
         console.log("outro");
-        $('.play-button')[0].removeEventListener('click', outro);
+
+        document.getElementsByClassName('play-button')[0].removeEventListener('click', outro);
 
         // Hide ui
-        $('.main-menu-ui')[0].style.visibility = 'hidden';
+        document.getElementsByClassName('main-menu-ui')[0].style.visibility = 'hidden';
 
         // Back to black background
-        $('.game-wrapper')[0].style.backgroundImage = '';
-        $('.game-wrapper')[0].style.backgroundColor = '#000000';
+        document.getElementsByClassName('game-wrapper')[0].style.backgroundImage = '';
+        document.getElementsByClassName('game-wrapper')[0].style.backgroundColor = '#000000';
 
         Crafty.audio.stop();
-        Crafty.audio.play('Harsh');
+        console.log("play Harsh sound");
+        Crafty.audio.play('Harsh', 1);
 
         shipDiamond.addComponent('MoveTo')
-            .moveto(-(shipDiamond.w / 2), 1500, 4, function() {
+            .moveto(shipDiamond.x, 1500, 4, function() {
                 console.log("shipDiamond moved to success");
 
                 //shipDiamond.removeComponent('MoveTo', false);
 
-                Crafty.scene('InBetween');
+                Crafty.scene('Playing');
             });
-
-        // setTimeout(function() {
-        //     Crafty.scene('Playing');
-        // }, 2000);
     }
-});
 
-Crafty.scene('InBetween', function() {
-    console.log("InBetween scene");
-
-    Crafty.scene('Playing');
+    document.getElementsByClassName('play-button')[0].addEventListener('click', outro);
 });
 
 Crafty.scene('Playing', function() {
     console.log("Playing scene");
+
+    Crafty.audio.stop();
+
+    document.getElementsByClassName('loading-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('main-menu-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('in-game-ui')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('game-over-ui')[0].style.visibility = 'hidden';
 
     var planetRadius = Math.min(Game.width(), Game.height()) * 0.1;
 
@@ -264,42 +312,45 @@ Crafty.scene('Playing', function() {
     var shipHeight = shipWidth * (7/3);
 
     var shipDiamond = Crafty.e('ShipDiamond')
-        .attr({ x: planetRadius - shipWidth / 2, y: -(Crafty.viewport.height / 2), w: shipWidth, h: shipHeight });
+        .attr({ x: planetRadius - (shipWidth / 2), y: -(Crafty.viewport.height / 2), w: shipWidth, h: shipHeight });
 
-    var moveCameraTo = function(position) {
-        Crafty.viewport.scroll('_x', position.x);
-        Crafty.viewport.scroll('_y', position.y);
-        Crafty.viewport._clamp();
-    };
+    // var moveCameraTo = function(position) {
+    //     Crafty.viewport.scroll('_x', position.x);
+    //     Crafty.viewport.scroll('_y', position.y);
+    //     Crafty.viewport._clamp();
+    // };
+    //
+    // var centerCameraTo = function(position) {
+    //     var newCameraPosition = {
+    //         x: -(position.x + (position.w / 2) - (Crafty.viewport.width / 2)),
+    //         y: -(position.y + (position.h / 2) - (Crafty.viewport.height / 2))
+    //     };
+    //
+    //     moveCameraTo(newCameraPosition);
+    // };
 
-    var centerCameraTo = function(position) {
-        var newCameraPosition = {
-            x: -(position.x + (position.w / 2) - (Crafty.viewport.width / 2)),
-            y: -(position.y + (position.h / 2) - (Crafty.viewport.height / 2))
-        };
-
-        moveCameraTo(newCameraPosition);
-    };
-
-    console.log("CrVpX", Crafty.viewport.x);
-    console.log("CvVpY", Crafty.viewport.y);
+    // console.log("CrVpX", Crafty.viewport.x);
+    // console.log("CvVpY", Crafty.viewport.y);
 
     Crafty.viewport.clampToEntities = false;
-    centerCameraTo(defensePlanet);
+    Crafty.viewport.centerOn(defensePlanet, 1);
+    // centerCameraTo(defensePlanet);
 
-    console.log("CrVpX", Crafty.viewport.x);
-    console.log("CvVpY", Crafty.viewport.y);
+    // console.log("CrVpX", Crafty.viewport.x);
+    // console.log("CvVpY", Crafty.viewport.y);
 
     var score = 0;
+    $('.score')[0].innerHTML = score;
 
     shipDiamond.addComponent('MoveTo')
-        .moveto(planetRadius - (shipDiamond.w / 2), shipDiamond.h * 0.6, 3, function() {
+        .moveto(shipDiamond.x/* ship is moving straight down */, shipDiamond.h * 0.6, 3, function() {
             console.log("different arrived");
 
             Crafty.audio.play('Thud');
 
-            $('.in-game-ui')[0].style.visibility = 'visible';
+            document.getElementsByClassName('in-game-ui')[0].style.visibility = 'visible';
 
+            // Play game music after delay after landing on planet
             setTimeout(function() {
                 Crafty.audio.play('Orbital_Colossus', -1);
             }, 700);
@@ -333,13 +384,21 @@ Crafty.scene('Playing', function() {
                     .attr({
                         x: astX,
                         y: astY,
-                        w: 25,
-                        h: 25
-                    })
-                    .color("#555");
+                        w: planetRadius * 0.5,
+                        h: planetRadius * 0.5
+                    });
+
+                var timeToHit = 5;
+                var decreaseTime = (score / 50) * 0.5;//Asteroids get faster as score increases
+
+                timeToHit -= decreaseTime;
+
+                if (timeToHit < 1.85) {
+                    timeToHit = 1.85;
+                }
 
                 asteroid.addComponent("MoveTo")
-                    .moveto(planetRadius, planetRadius, 4.4, function() {
+                    .moveto(planetRadius, planetRadius, timeToHit, function() {
                         console.log("die");
 
                         //console.log("removeEvent this:", this);
@@ -358,27 +417,36 @@ Crafty.scene('Playing', function() {
                             allAsteroids[i].destroy();
                         }
 
-                        $('.game-over-text')[0].style.visibility = 'visible';
-                        $('.play-again')[0].style.visibility = 'visible';
+                        // $('.game-over-text')[0].style.visibility = 'visible';
+                        // $('.play-again')[0].style.visibility = 'visible';
+                        document.getElementsByClassName('game-over-ui')[0].style.visibility = 'visible';
                     });
 
-                asteroid._hasDebugMarkers = true;
+                //asteroid._hasDebugMarkers = true;
 
                 allAsteroids.push(asteroid);
 
             }, 700);
 
             $('.play-again')[0].addEventListener('click', restart);
+            $('.back-to-menu')[0].addEventListener('click', backToMenu);
 
             function restart() {
                 $('.in-game-ui')[0].style.visibility = 'hidden';
                 $('.score')[0].innerHTML = "0";
-                $('.game-over-text')[0].style.visibility = 'hidden';
-                $('.play-again')[0].style.visibility = 'hidden';
+                // $('.game-over-text')[0].style.visibility = 'hidden';
+                // $('.play-again')[0].style.visibility = 'hidden';
+                $('.game-over-ui')[0].style.visibility = 'hidden';
 
                 $('.play-again')[0].removeEventListener('click', restart);
 
                 Crafty.scene('Playing');
+            }
+
+            function backToMenu() {
+                $('.back-to-menu')[0].removeEventListener('click', backToMenu);
+
+                Crafty.scene('MainMenu');
             }
 
             //console.log("addEvent this:", this);
@@ -491,56 +559,56 @@ Crafty.scene('Playing', function() {
 // Possible to specify the center of the planet (xIn and yIn)
 //  and adjust center of the gradient (dGradX and dGradY)
 // Planet is randomly generated in aread around the center X and Y
-function getRandPlanet(xIn, yIn, dGradX, dGradY, centerX, centerY) {
-    var randX = getRandInt(0, Game.width() - 1);
-    var randY = getRandInt(0, Game.height() - 1);
-
-    var x = (isNaN(xIn))? randX : xIn;
-    //console.log(x);
-    var y = (isNaN(yIn))? randY : yIn;
-
-    if (!isNaN(centerX)) {
-        x += centerX
-        x -= Game.width() / 2;
-    }
-    if (!isNaN(centerY)) {
-        y += centerY
-        y -= Game.height() / 2;
-    }
-
-    var radius = getRandInt(8, Math.min(Game.width(), Game.height()) / 7);
-
-    // gradX and gradY are on edge of planet
-    var gradX = x + getRandInt(-radius, radius);
-    gradY += (isNaN(dGradX))? 0 : dGradX;
-    var gradY = y + Math.sqrt(Math.pow(radius, 2) - Math.pow(gradX - x, 2));
-    gradY += (isNaN(dGradY))? 0 : dGradY;
-
-    var randColors = [];
-    for (var j = 0; j < 3; j++) {
-        randColors[j] = 'rgb(' +
-            getRandInt(0, 255) + ', ' +
-            getRandInt(0, 255) + ', ' +
-            getRandInt(0, 255) + ')';
-    }
-
-    var grd = Gradient(
-        gradX,
-        gradY,
-        0,
-
-        gradX,
-        gradY,
-        getRandInt(2 * radius, 8 * radius),
-        [
-            randColors[0],
-            randColors[1],
-            randColors[2]
-        ]
-    );
-
-    return Crafty.e('Planet')
-        .attr({ x: x, y: y })
-        .planet(radius, grd)
-        .shifter(0, 30);
-}
+// function getRandPlanet(xIn, yIn, dGradX, dGradY, centerX, centerY) {
+//     var randX = getRandInt(0, Game.width() - 1);
+//     var randY = getRandInt(0, Game.height() - 1);
+//
+//     var x = (isNaN(xIn))? randX : xIn;
+//     //console.log(x);
+//     var y = (isNaN(yIn))? randY : yIn;
+//
+//     if (!isNaN(centerX)) {
+//         x += centerX
+//         x -= Game.width() / 2;
+//     }
+//     if (!isNaN(centerY)) {
+//         y += centerY
+//         y -= Game.height() / 2;
+//     }
+//
+//     var radius = getRandInt(8, Math.min(Game.width(), Game.height()) / 7);
+//
+//     // gradX and gradY are on edge of planet
+//     var gradX = x + getRandInt(-radius, radius);
+//     gradY += (isNaN(dGradX))? 0 : dGradX;
+//     var gradY = y + Math.sqrt(Math.pow(radius, 2) - Math.pow(gradX - x, 2));
+//     gradY += (isNaN(dGradY))? 0 : dGradY;
+//
+//     var randColors = [];
+//     for (var j = 0; j < 3; j++) {
+//         randColors[j] = 'rgb(' +
+//             getRandInt(0, 255) + ', ' +
+//             getRandInt(0, 255) + ', ' +
+//             getRandInt(0, 255) + ')';
+//     }
+//
+//     var grd = Gradient(
+//         gradX,
+//         gradY,
+//         0,
+//
+//         gradX,
+//         gradY,
+//         getRandInt(2 * radius, 8 * radius),
+//         [
+//             randColors[0],
+//             randColors[1],
+//             randColors[2]
+//         ]
+//     );
+//
+//     return Crafty.e('Planet')
+//         .attr({ x: x, y: y })
+//         .planet(radius, grd)
+//         .shifter(0, 30);
+// }

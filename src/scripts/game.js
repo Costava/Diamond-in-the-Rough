@@ -15,15 +15,9 @@ Game = {
     },
 
     start: function() {
-        Crafty.init(this.width(), this.height(), this.stage());
-        //Crafty.background('rgb(0, 0, 0)');
+        // Canvas will always be 'fullscreen'/size of browser viewport
+        Crafty.init(null, null, this.stage());
 
-        window.onresize = function() {
-            console.log("resize");
-            Crafty.init(null, null, Game.stage());
-        };
-
-        // Load Intro scene to get things going
         Crafty.scene('Loading');
     }
 };

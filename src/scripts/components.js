@@ -71,8 +71,8 @@ Crafty.c('Shifter', {
         //this._gradient.y1 *= this.dy * dt;
         //this._gradient.y2 *= this.dy * dt;
 
-        if (this.y > Crafty.canvas._canvas.height / 2) {
-            console.log("destroy");
+        if (this.y > Game.height() / 2) {
+            console.log("planet destroyed");
             Crafty.trigger('PlanetDestroyed');
             this.destroy();
         }
@@ -138,10 +138,11 @@ Crafty.c('Expander', {
         });*/
     },
 
-    expander: function(growProduct) {
+    expander: function(growProduct, maxHeight, callback) {
         this.growProduct = growProduct;
+        this.maxHeight = maxHeight;
 
-        //this.callback = callback;
+        this.callback = callback;
 
         return this;
     },
@@ -149,42 +150,26 @@ Crafty.c('Expander', {
     _update: function(e) {
         var dt = e.dt * 0.001;
 
-        this.w += this.w * this.growProduct * dt;
-        this.h += this.h * this.growProduct * dt;
+        var wDiff = this.w * this.growProduct * dt;
+        var hDiff = this.h * this.growProduct * dt;
 
-        if (this.x % 2 == 0) {
-            this.x += 1;
-        }
-        else {
-            this.x -= 1;
-        }
+        this.w += wDiff;
+        this.h += hDiff;
 
-        if (this.h >= Game.height() * 1.75) {
-            console.log("exceeded");
+        this.x -= wDiff / 2;
+        this.y -= hDiff / 2;
+
+        if (this.h >= this.maxHeight) {
+            console.log("Exceeded");
             var ratio = this.w / this.h;
 
-            this.h = Game.height() * 1.75;
+            this.h = this.maxHeight;
             this.w = this.h * ratio;
 
-            this.unbind('EnterFrame', this._update)
+            this.unbind('EnterFrame', this._update);
 
-            //this.callback();
-            Crafty.trigger('DoneExpanding');
+            this.callback();
         }
-
-        //console.log("width:", this.width, "1.75canvas.width:", Crafty.canvas._canvas.width * 1.75);
-        //console.log("height:", this.height, "1.75canvas.height:", Crafty.canvas._canvas.height * 1.75);
-
-        //with(Crafty.canvas.context) {
-        //    console.log(this);
-        //    Crafty.trigger('Draw');
-        //}
-
-        //var e = Object();
-        //e.ctx = Crafty.canvas.context;
-
-        //console.log(Crafty.canvas.context);
-        //Crafty.trigger.apply(e, ['Draw']);
     }
 });
 
@@ -307,16 +292,6 @@ Crafty.c('Bullet', {
     }
 });
 
-Crafty.c('Asteroid', {
-    ready: true, // Allows the `Draw` event to be called... idk
-    init: function() {
-        //console.log("init");
-        this.requires('Actor, Color');
-
-        this.z = 800;
-    }
-});
-
 Crafty.c('ShipDiamond', {
     ready: true, // Allows the `Draw` event to be called... idk
     init: function() {
@@ -370,10 +345,46 @@ Crafty.c('ShipDiamond', {
     }
 });
 
+Crafty.c('Asteroid', {
+    ready: true, // Allows the `Draw` event to be called... idk
+    init: function() {
+        //console.log("init");
+        this.requires('Actor');
+
+        this.z = 800;
+
+        this.color =
+            "rgb(" +
+            getRandInt(40, 255) + ", " +
+            getRandInt(40, 255) + ", " +
+            getRandInt(40, 255) +
+            ")";
+
+        this.cleanBind('Draw', this._draw, 'Asteroid');
+    },
+
+    _draw: function(e) {
+        //console.log("dpdraw");
+        var ctx = e.ctx;
+
+        ctx.save();
+        ctx.translate(e.pos._x, e.pos._y);
+
+        ctx.beginPath();
+        ctx.arc(0 + this.w / 2, 0 + this.w / 2, /*radius*/this.w / 2, 0, 2 * Math.PI, false);
+
+        ctx.fillStyle = this.color;
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+});
+
 Crafty.c('DefensePlanet', {
     ready: true, // Allows the `Draw` event to be called... idk
     init: function() {
-        console.log("dpinit");
+        //console.log("dpinit");
         this.requires('Actor');
 
         this.z = 400;
