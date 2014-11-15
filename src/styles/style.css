@@ -15,6 +15,12 @@ html, body, .game-wrapper, .game-stage {
 
 .game-wrapper {
     background-color: #000000;
+
+    z-index: 50;
+}
+
+.game-stage {
+    z-index: 100;
 }
 
 .intro-ui {
@@ -55,7 +61,7 @@ html, body, .game-wrapper, .game-stage {
 
     text-align: center;
 
-    font-family: sans-serif;
+    font-family: "Exo", sans-serif;
     color: #FFFFFF;
 }
 
@@ -117,6 +123,27 @@ html, body, .game-wrapper, .game-stage {
 
     top: 20px;
     left: 20px;
+}
+
+.directions {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 20px;
+
+    z-index: 75;
+
+    color: rgb(255, 255, 255, 0);
+    font-family: "Exo", sans-serif;
+
+    text-align: center;
+
+    visibility: hidden;
+
+    -webkit-animation: breathing 5s ease 0s 1 reverse none running;
+       -moz-animation: breathing 5s ease 0s 1 reverse none running;
+         -o-animation: breathing 5s ease 0s 1 reverse none running;
+            animation: breathing 5s ease 0s 1 reverse none running;
 }
 
 .game-over-ui {

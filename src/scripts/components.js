@@ -282,15 +282,15 @@ Crafty.c('MoveTo', {
     }
 });
 
-Crafty.c('Bullet', {
-    ready: true, // Allows the `Draw` event to be called... idk
-    init: function() {
-        //console.log("init");
-        this.requires('Actor, Color');
-
-        this.z = 800;
-    }
-});
+// Crafty.c('Bullet', {
+//     ready: true, // Allows the `Draw` event to be called... idk
+//     init: function() {
+//         //console.log("init");
+//         this.requires('Actor, Color');
+//
+//         this.z = 800;
+//     }
+// });
 
 Crafty.c('ShipDiamond', {
     ready: true, // Allows the `Draw` event to be called... idk
@@ -353,6 +353,9 @@ Crafty.c('Asteroid', {
 
         this.z = 800;
 
+        this.initialX = this.x;
+        this.initialY = this.y;
+
         this.color =
             "rgb(" +
             getRandInt(40, 255) + ", " +
@@ -380,6 +383,46 @@ Crafty.c('Asteroid', {
         ctx.restore();
     }
 });
+
+// Crafty.c('AsteroidTrail', {
+//     ready: true, // Allows the `Draw` event to be called... idk
+//     init: function() {
+//         //console.log("init");
+//         this.requires('Actor');
+//
+//         this.color = 'rgba(240, 34, 25, 0.7)';
+//
+//         this.cleanBind('EnterFrame', this._update, 'AsteroidTrail');
+//
+//         this.cleanBind('Draw', this._draw, 'AsteroidTrail');
+//     },
+//
+//     asteroidtrail: function(asteroid) {
+//         this.asteroid = asteroid;
+//
+//         this.startingX = asteroid._x;
+//         this.startingY = asteroid._y;
+//     },
+//
+//     _draw: function(e) {
+//         // Draw trail
+//         ctx.save();
+//
+//         ctx.beginPath();
+//         //ctx.moveTo(this.initialX, this.initialY);
+//         ctx.translate(this.initialX, this.initialY);
+//         ctx.moveTo(0, 0);
+//
+//         //ctx.lineTo(e.pos._x, e.pos._y);
+//         ctx.translate(e.pos._x, e.pos._y);
+//         ctx.lineTo(0, 0);
+//
+//         ctx.fillStyle = this.color;
+//         ctx.fill();
+//
+//         ctx.restore();
+//     }
+// });
 
 Crafty.c('DefensePlanet', {
     ready: true, // Allows the `Draw` event to be called... idk
@@ -503,225 +546,3 @@ Crafty.c('2DExtended', {
             return this.getActualPosition(new utility.Vector2((this.w/2) + deltaPosition.x, (this.h/2) + deltaPosition.y));
     }
 });
-
-
-
-/*Crafty.c('Centered', {
-    init: function() {
-        this.requires('Actor');
-
-        this.bind('EnterFrame', this._update);//.one('RemoveComponent', function() {
-        //    this.unbind('EnterFrame', this._update);
-        //});
-    },
-
-    _update: function(e) {
-        this.x = Crafty.canvas._canvas.width / 2;
-        this.y = Crafty.canvas._canvas.height / 2;
-    }
-});*/
-
-/*Crafty.c('AlternatedMovement', {
-    init: function() {
-        this.requires('Actor');
-
-        this.add = true;
-
-        this.bind('EnterFrame', this._update);//.one('RemoveComponent', function() {
-        //    this.unbind('EnterFrame', this._update);
-        //});
-    },
-
-    delta: function(dx, dy) {
-        this.dx = dx;
-        this.dy = dy;
-    },
-
-    _update: function(e) {
-        console.log("alt");
-        if (this.add) {
-            this.x += this.dx;
-            this.y += this.dy;
-        }
-        else {
-            this.x -= this.dx;
-            this.y -= this.dy;
-        }
-
-        this.add = !this.add;
-    }
-
-});*/
-
-// via: http://stackoverflow.com/a/7356528/796832
-function isFunction(functionToCheck) {
-	var getType = {};
-	return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-}
-
-Crafty.c('LerpCamera', {
-	init: function() {
-        this.requires('Base');
-	},
-
-	lerpCamera: function(focalEntity, tScalar) {
-		// Make this a function no matter what
-		this._focalEntity = isFunction(focalEntity) ? focalEntity : function() { return focalEntity; };
-		this._tScalar = tScalar || 0.5;
-
-		// Start the camera position at the focal entity
-		this._centerCameraTo(this._focalEntity());
-		this._previousPosition = this._focalEntity();
-
-		this.cleanBind('EnterFrame', this._update, 'LerpCamera');/*.one('RemoveComponent', function() {
-			this.unbind('EnterFrame', this._update);
-		});*/
-	},
-
-	_update: function(e) {
-		//console.log(e);
-		var dt = e.dt*0.001;
-
-		var targetFocalPosition = this._focalEntity();
-
-		var position = {
-			x: this._lerp(this._previousPosition.x, targetFocalPosition.x, this._tScalar*dt),
-			y: this._lerp(this._previousPosition.y, targetFocalPosition.y, this._tScalar*dt)
-		};
-
-		// Add on the `w` and `h` parameters
-		// Use the target as the default because we want to override the x and y
-		position = $.extend({}, targetFocalPosition, position);
-
-		this._centerCameraTo(position);
-
-		this._previousPosition = position;
-
-	},
-
-	_lerp: function(start, end, fracJourney)
-	{
-		fracJourney = fracJourney.clamp(0, 1);
-
-		return start + ((end-start)*fracJourney);
-	},
-
-	_centerCameraTo:  function(position) {
-		var newCameraPosition = {
-            x: -(position.x + (position.w / 2) - (Crafty.viewport.width / 2)),
-            y: -(position.y + (position.h / 2) - (Crafty.viewport.height / 2))
-        };
-		this._moveCameraTo(newCameraPosition);
-	},
-
-	_moveCameraTo: function(position) {
-		Crafty.viewport.scroll('_x', position.x);
-		Crafty.viewport.scroll('_y', position.y);
-		Crafty.viewport._clamp();
-	}
-});
-
-/*Crafty.c('ReflectedOozingGradient', {
-    ready: true, // Allows the `Draw` event to be called... idk
-    init: function() {
-        //console.log("init");
-        this.requires('Actor');
-
-        this.z = 100;
-
-        this.colorSpot = 0.5;
-
-        this.colorStops = [];
-
-        for (var i = 0; i < 3; i++) {
-            var color = getRandColor();
-
-            console.log(color);
-            this.colorStops.push(color);
-        }
-
-        this.bind('EnterFrame', this._update).one('RemoveComponent', function() {
-            this.unbind('EnterFrame', this._update);
-        });
-
-        this.bind('Draw', this._draw).one('RemoveComponent', function() {
-            this.unbind('Draw', this._draw);
-        });
-    },
-
-    size: function(width, height) {
-        this.width = width;
-        this.height = height;
-
-        return this;
-    },
-
-    _update: function(e) {
-        console.log("Update ROG");
-        var dt = e.dt * 0.001;
-        //console.log(dt);
-
-        //console.log(this.colorSpot);
-        this.colorSpot += 1 * dt;
-        //console.log(this.colorSpot);
-
-        if (this.colorSpot > 1) {
-            this.colorSpot %= 1;
-
-            // Remove the last color stop
-            this.colorStops.pop();
-
-            var color = getRandColor();
-
-            // Shift color stops 1 and 2 to positions 2 and 3
-            for (var i = this.colorStops.length - 1; i >= 1; i--) {
-                this.colorStops[i] = this.colorStops[i - 1];
-            }
-
-            // Set the new first color stop
-            this.colorStops[1] = color;
-        }
-    },
-
-    _draw: function(e) {
-        console.log("Draw ROG");
-        //console.log(e.dt);
-        //this._update(e);
-        var ctx = e.ctx;
-
-        ctx.save();
-
-        var grd = ctx.createLinearGradient(this.x, this.y, this.x + this.width / 2, this.y);
-
-        grd.addColorStop(0, this.colorStops[0]);
-        //console.log(this.colorSpot);
-        grd.addColorStop(this.colorSpot, this.colorStops[1]);
-        grd.addColorStop(1, this.colorStops[2]);
-
-        ctx.beginPath();
-        ctx.rect(this.x, this.y - this.height / 2, this.width / 2, this.height);
-        ctx.closePath();
-
-        ctx.fillStyle = grd;
-        ctx.fill();
-
-        ctx.restore();
-
-        ctx.save();
-
-        grd = ctx.createLinearGradient(this.x - this.width / 2, this.y, this.x, this.y);
-
-        grd.addColorStop(0, this.colorStops[2]);
-        grd.addColorStop(1 - this.colorSpot, this.colorStops[1]);
-        grd.addColorStop(1, this.colorStops[0]);
-
-        ctx.beginPath();
-        ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width / 2, this.height);
-        ctx.closePath();
-
-        ctx.fillStyle = grd;
-        ctx.fill();
-
-        ctx.restore();
-    }
-});*/

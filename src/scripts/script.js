@@ -56,25 +56,3 @@ function getRandColor() {
 Number.prototype.clamp = function(min, max) {
   return Math.min(Math.max(this, min), max);
 };
-
-// Get random circle with center inside canvas
-// radiusProp is maximum proportion of circle's radius to
-//  shorter dimension of canvas
-// radiusProp is 0.9 if not provided or <= 0
-/*function getRandomCircle(canvas, radiusProp) {
-    // Get x and y center of circle
-    var x = getRandInt(0, canvas.width - 1);
-    var y = getRandInt(0, canvas.height - 1);
-
-    var shortDim = Math.min(canvas.width, canvas.height);
-
-    if (isNaN(radiusProp) || radiusProp <= 0) {
-        radiusProp = 0.9;
-    }
-
-    var maxRadius = Math.floor(shortDim * radiusProp);
-
-    var radius = getRandInt(1, maxRadius);
-
-    return {x: x, y: y, radius: radius};
-}*/
