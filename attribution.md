@@ -71,7 +71,7 @@ File(s): ventilator.wav, ventilator.ogg
 ---
 
 ##### Crafty.js
-File(s): crafty.js, crafty-min.js
+File(s): crafty.js
 - Source: http://craftyjs.com/
 - License: [MIT License](https://en.wikipedia.org/wiki/MIT_License)
 - Notes: Unmodified
@@ -79,7 +79,7 @@ File(s): crafty.js, crafty-min.js
 ---
 
 ##### jQuery
-File(s): jquery-1.11.1.js, jquery-1.11.1.min.js
+File(s): jquery-1.11.1.js
 - Source: http://jquery.com/download/
 - License: https://github.com/jquery/jquery/blob/master/LICENSE.txt
 - Notes: Unmodified
