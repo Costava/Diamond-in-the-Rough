@@ -449,6 +449,8 @@ Crafty.scene('Playing', function() {
                         $('.score')[0].innerHTML = score;
 
                         allAsteroids[i].destroy();
+
+                        allAsteroids.splice(i,1);
                     }
                 }
             }
