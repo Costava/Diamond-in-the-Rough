@@ -71,7 +71,8 @@ Crafty.c('Shifter', {
         //this._gradient.y1 *= this.dy * dt;
         //this._gradient.y2 *= this.dy * dt;
 
-        if (this.y > Game.height() / 2) {
+        var rect = Crafty.viewport.rect();
+        if (this.y > rect._h + rect._y) {
             console.log("planet destroyed");
             Crafty.trigger('PlanetDestroyed');
             this.destroy();
@@ -82,7 +83,7 @@ Crafty.c('Shifter', {
 Crafty.c('Planet', {
     ready: true, // Allows the `Draw` event to be called... idk
     init: function() {
-        this.requires('Actor, Shifter');
+        this.requires('Actor, Shifter, 2D');
 
         this.cleanBind('Draw', this._draw, 'Planet');/*.one('RemoveComponent', function() {
             this.unbind('Draw', this._draw);
@@ -107,7 +108,7 @@ Crafty.c('Planet', {
         ctx.save();
 
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this._radius, 0, 2 * Math.PI, false);
+        ctx.arc(this.x + this._radius, this.y + this._radius, this._radius, 0, 2 * Math.PI, false);
 
         var grd = ctx.createRadialGradient(
             this._gradient.x1,

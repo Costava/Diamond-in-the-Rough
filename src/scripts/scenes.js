@@ -142,12 +142,12 @@ Crafty.scene('Intro', function() {
         //
         // planets.push(getRandPlanet(undefined, yIn, undefined, Game.height() / 2, 0, 0));
 
-        var x = getRandInt(-(Game.width() / 2), Game.width() / 2);
-        var y = getRandInt(-1.1 * (Game.height() / 2), -1.4 * (Game.height() / 2));
-
         var minDimension = Math.min(Game.width(), Game.height());
 
         var radius = getRandInt(0.05 * minDimension, 0.26 * minDimension);
+
+        var x = getRandInt(-(Game.width() / 2), Game.width() / 2);
+        var y = -(Game.height() / 2) - (radius * 2);
 
         var gradX = (Math.random() < 0.5)? getRandInt(-(1.1 * radius), -radius) : getRandInt(radius, 1.1 * radius);
         var gradY = getRandInt(-(Game.height() / 8), Game.height() / 8);
@@ -176,7 +176,7 @@ Crafty.scene('Intro', function() {
             Crafty.e('Planet')
                 .attr({ x: x, y: y, w: (2 * radius), h: (2 * radius) })
                 .planet(radius, gradient)
-                .shifter(0, 30)
+                .shifter(0, getRandInt(25, 35))
         );
         /* */
     }
@@ -187,7 +187,7 @@ Crafty.scene('Intro', function() {
 
         addPlanet();
 
-        planets[i].y += getRandInt(Game.height() * 0.5, Game.height());
+        planets[i].y += getRandInt(0, Game.height());
     }
 
     Crafty.bind('PlanetDestroyed', addPlanet);
